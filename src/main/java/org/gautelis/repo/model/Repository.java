@@ -228,7 +228,7 @@ public class Repository {
             long unitId
     ) throws DatabaseConnectionException, DatabaseReadException {
 
-        return TimedExecution.run(context.getTimingData(), "unit exists", () -> UnitFactory.unitExists(context, tenantId, unitId));
+        return TimedExecution.run(context.getTimingData(), "unit exists", () -> (Boolean) UnitFactory.unitExists(context, tenantId, unitId));
     }
 
     /**
@@ -256,8 +256,6 @@ public class Repository {
         }
 
         log.debug("Storing unit {}", unit.getReference());
-
-        //
         TimedExecution.run(context.getTimingData(), "store unit", unit::store);
 
         generateActionEvent(
@@ -487,15 +485,6 @@ public class Repository {
             return false;
         }
 
-        /*-----------------------------------------
-         * Remove contents of unit
-         *----------------------------------------*/
-
-        /*--------------------------------------------------------
-         * Remove unit itself:
-         * - remove all versions of the unit (kind of obvious)
-         * - remove unit from all associations
-         *-------------------------------------------------------*/
         TimedExecution.run(context.getTimingData(), "delete unit", unit::delete);
 
         generateActionEvent(
@@ -515,7 +504,6 @@ public class Repository {
         }
         // We want to set state to pending disposition.
         TimedExecution.run(context.getTimingData(), "status transition", () -> unit.requestStatusTransition(Unit.Status.PENDING_DISPOSITION));
-        TimedExecution.run(context.getTimingData(), "store unit", unit::store);
 
         generateActionEvent(
                 unit,
@@ -537,7 +525,6 @@ public class Repository {
         }
 
         TimedExecution.run(context.getTimingData(), "activate unit", unit::activate);
-        TimedExecution.run(context.getTimingData(), "store unit", unit::store);
 
         generateActionEvent(
                 unit,
@@ -566,7 +553,6 @@ public class Repository {
         }
 
         TimedExecution.run(context.getTimingData(), "inactivate unit", unit::inactivate);
-        TimedExecution.run(context.getTimingData(), "store unit", unit::store);
 
         generateActionEvent(
                 unit,
@@ -632,7 +618,7 @@ public class Repository {
                         context.getTimingData().update("search",after - before);
 
                         if (log.isTraceEnabled()) {
-                            log.trace("Search: time={}ms", (after - before));
+                            log.trace("Search: time={}ms", Long.valueOf(after - before));
                         }
 
                         while (rs.next()) {
@@ -680,7 +666,7 @@ public class Repository {
         Optional<KnownAttributes.AttributeInfo> attributeInfo = getAttributeInfo(attributeName);
         Integer[] attributeId = { null };
         attributeInfo.ifPresent(attr -> {
-            attributeId[0] = attr.attrId;
+            attributeId[0] = (Integer) attr.attrId;
         });
         return Optional.ofNullable(attributeId[0]);
     }

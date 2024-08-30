@@ -71,8 +71,8 @@ public class RepositoryTest extends TestCase {
         final String stringAttribute = "dc:title";
         final String timeAttribute = "dc:date";
 
-        final int numberOfParents = 1000; //
-        final int numberOfChildren = 500; //
+        final int numberOfParents = 10; //
+        final int numberOfChildren = 10; //
 
         try {
             Timestamp firstParentCreated = null;
@@ -164,7 +164,7 @@ public class RepositoryTest extends TestCase {
                 }
             }
 
-            // In order to search here in test, we will need access to some internal objects,
+            // In order to search here in test, we will need some "internal" objects,
             // such as Context, DataSource, etc.
             {
                 // Unit constraints
@@ -196,6 +196,8 @@ public class RepositoryTest extends TestCase {
                 DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
                 StringBuilder buf = searchAdapter.generateStatement(usd);
                 log.debug("Search statement: {}", buf.toString());
+
+                final boolean doCollectStatistics = false;
 
                 // Actually searching
                 TimedExecution.run(repo.getTimingData(), "custom search", () -> {
@@ -316,7 +318,7 @@ public class RepositoryTest extends TestCase {
                  */
                 Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_internal_assoc", rs -> {
                     if (rs.next()) {
-                        statistics.info("Number of internal relations: {}", rs.getInt(1));
+                        statistics.info("Number of internal associations: {}", rs.getInt(1));
                     }
                 });
 

@@ -239,7 +239,8 @@ public class Unit implements Cloneable {
     /**
      * Stores unit to database.
      */
-    public void store(
+    /* package accessible only */
+    void store(
     ) throws DatabaseConnectionException, AttributeTypeException, AttributeValueException, DatabaseReadException, DatabaseWriteException, ConfigurationException, SystemInconsistencyException {
         if (!isNew) {
             return;
@@ -249,32 +250,30 @@ public class Unit implements Cloneable {
             conn.setAutoCommit(false);
 
             try {
-                TimedExecution.run(ctx.getTimingData(), "store unit", () -> {
+                try {
                     try {
-                        try {
-                            store(conn);
+                        store(conn);
 
-                        } catch (DatabaseWriteException dbwe) {
-                            SQLException sqle = dbwe.getSQLException();
-                            log.error("Transaction rollback due to: {}", Database.squeeze(sqle));
+                    } catch (DatabaseWriteException dbwe) {
+                        SQLException sqle = dbwe.getSQLException();
+                        log.error("Transaction rollback due to: {}", Database.squeeze(sqle));
 
-                            conn.rollback();
-                            throw dbwe;
-                        }
-                    } catch (SQLException sqle) {
-                        log.error("Failed to rollback due to: {}", Database.squeeze(sqle));
-                        throw new DatabaseWriteException(sqle);
+                        conn.rollback();
+                        throw dbwe;
                     }
+                } catch (SQLException sqle) {
+                    log.error("Failed to rollback due to: {}", Database.squeeze(sqle));
+                    throw new DatabaseWriteException(sqle);
+                }
 
-                    try {
-                        conn.commit();
-                    }
-                    catch (SQLException sqle) {
-                        throw new DatabaseWriteException(sqle);
-                    }
+                try {
+                    conn.commit();
+                }
+                catch (SQLException sqle) {
+                    throw new DatabaseWriteException(sqle);
+                }
 
-                    isNew = false;
-                });
+                isNew = false;
 
             } catch (DatabaseWriteException dbwe) {
                 SQLException sqle = dbwe.getSQLException();
@@ -1096,16 +1095,16 @@ public class Unit implements Cloneable {
     ) throws DatabaseConnectionException, DatabaseWriteException, IllegalRequestException {
 
         if (isNew) {
-            throw new IllegalRequestException("Can not set status of new unit that has never been saved");
+            status = requestedStatus;
+        } else {
+            TimedExecution.run(ctx.getTimingData(), "set status", () -> Database.usePreparedStatement(ctx.getDataSource(), ctx.getStatements().unitSetStatus(), pStmt -> {
+                int i = 0;
+                pStmt.setInt(++i, requestedStatus.getStatus());
+                pStmt.setInt(++i, tenantId);
+                pStmt.setLong(++i, unitId);
+                Database.executeUpdate(pStmt);
+            }));
         }
-
-        TimedExecution.run(ctx.getTimingData(), "set status", () -> Database.usePreparedStatement(ctx.getDataSource(), ctx.getStatements().unitSetStatus(), pStmt -> {
-            int i = 0;
-            pStmt.setInt(++i, requestedStatus.getStatus());
-            pStmt.setInt(++i, tenantId);
-            pStmt.setLong(++i, unitId);
-            Database.executeUpdate(pStmt);
-        }));
     }
 
     /**
