@@ -71,8 +71,8 @@ public class RepositoryTest extends TestCase {
         final String stringAttribute = "dc:title";
         final String timeAttribute = "dc:date";
 
-        final int numberOfParents = 10; //
-        final int numberOfChildren = 10; //
+        final int numberOfParents = 1000; //
+        final int numberOfChildren = 100; //
 
         try {
             Timestamp firstParentCreated = null;
@@ -197,8 +197,6 @@ public class RepositoryTest extends TestCase {
                 StringBuilder buf = searchAdapter.generateStatement(usd);
                 log.debug("Search statement: {}", buf.toString());
 
-                final boolean doCollectStatistics = false;
-
                 // Actually searching
                 TimedExecution.run(repo.getTimingData(), "custom search", () -> {
                     try {
@@ -209,9 +207,13 @@ public class RepositoryTest extends TestCase {
                                     int i = 0;
                                     int _tenantId = rs.getInt(++i);
                                     long _unitId = rs.getLong(++i);
-                                    Timestamp _modified = rs.getTimestamp(++i);
+                                    Timestamp _created = rs.getTimestamp(++i);
 
-                                    System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " modified=" + _modified);
+                                    System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " created=" + _created);
+
+                                    // Now inactivate it!
+                                    Optional<Unit> unit = repo.getUnit(_tenantId, _unitId);
+                                    unit.ifPresent(repo::inactivateUnit);
                                 }
                             }
                         ));
