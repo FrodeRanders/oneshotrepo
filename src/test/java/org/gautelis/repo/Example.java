@@ -80,7 +80,7 @@ public class Example {
         SearchItem<String> stringSearchItem = new StringAttributeSearchItem(attributeId, Operator.EQ, "Ajj som bara den");
         expr = SearchExpression.assembleAnd(expr, stringSearchItem);
 
-        // Result set constraints (paging)
+        // 
         SearchOrder order = SearchOrder.getDefaultOrder(); // descending on creation time
 
         // Now we can either use canned search (that produces units) or
