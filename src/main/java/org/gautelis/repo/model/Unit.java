@@ -1148,7 +1148,7 @@ public class Unit implements Cloneable {
      * @return Returns created String
      */
     public String toString() {
-        return getReference() + "(" + (null != name ? name : "") + ")" + (isNew ? "*" : "");
+        return "Unit{" + getReference() + "(" + (null != name ? name : "") + ")" + (isNew ? "*" : "") + "}";
     }
 
     public Object clone() throws CloneNotSupportedException {

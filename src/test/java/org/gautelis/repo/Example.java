@@ -4,7 +4,6 @@ import org.gautelis.repo.db.Database;
 import org.gautelis.repo.model.Repository;
 import org.gautelis.repo.model.Unit;
 import org.gautelis.repo.model.attributes.Attribute;
-import org.gautelis.repo.model.utils.TimedExecution;
 import org.gautelis.repo.search.*;
 
 import java.sql.SQLException;
@@ -12,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Collection;
 
 public class Example {
 
@@ -84,26 +84,41 @@ public class Example {
         SearchOrder order = SearchOrder.getDefaultOrder(); // descending on creation time
         UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
 
-        // Build SQL statement for search
-        DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
-        StringBuilder buf = searchAdapter.generateStatement(usd);
+        // Now we can either use canned search (that produces units) or
+        // search "manually" where we retrieve individual fields of units
+        // without actually creating Unit objects.
+        if (/* canned search? */ true) {
+            SearchResult result = repo.searchUnit(
+                    /* paging stuff */ 0, 5, 100,
+                    expr, order
+            );
 
-        try {
-            repo.useConnection(conn -> Database.useReadonlyStatement(conn, buf.toString(),
-                    stmt -> stmt.setMaxRows(/* selectionSize */ 5),
-                    rs -> {
-                        while (rs.next()) {
-                            int i = 0;
-                            int _tenantId = rs.getInt(++i);
-                            long _unitId = rs.getLong(++i);
-                            Timestamp _created = rs.getTimestamp(++i);
+            Collection<Unit> units = result.results();
+            for (Unit unit : units) {
+                System.out.println("Found: " + unit);
+            }
+        } else {
+            // Search "manually", in which case no Unit:s are instantiated
+            DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
+            StringBuilder buf = searchAdapter.generateStatement(usd);
 
-                            System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " created=" + _created);
+            try {
+                repo.useConnection(conn -> Database.useReadonlyStatement(conn, buf.toString(),
+                        stmt -> stmt.setMaxRows(/* selectionSize */ 5),
+                        rs -> {
+                            while (rs.next()) {
+                                int i = 0;
+                                int _tenantId = rs.getInt(++i);
+                                long _unitId = rs.getLong(++i);
+                                Timestamp _created = rs.getTimestamp(++i);
+
+                                System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " created=" + _created);
+                            }
                         }
-                    }
-            ));
-        } catch (SQLException sqle) {
-            throw new RuntimeException("Could not search: " + Database.squeeze(sqle), sqle);
+                ));
+            } catch (SQLException sqle) {
+                throw new RuntimeException("Could not search: " + Database.squeeze(sqle), sqle);
+            }
         }
     }
 }

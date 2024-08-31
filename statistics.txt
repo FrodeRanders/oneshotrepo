@@ -189,3 +189,28 @@ fetch known attributes |      1 |  15,00 |  15,00 |    15,00 |      0,00 |      
             store unit |    110 |  13,00 |  20,00 |    14,95 |      6,33 |        1644 | 1s 644ms
 
 
+2024-09-01 00:17:04.064: Number of units: 220
+2024-09-01 00:17:04.075: Number of mappings from units to values: 420
+2024-09-01 00:17:04.085: Number of string values: 662
+2024-09-01 00:17:04.095: Number of time values: 200
+2024-09-01 00:17:04.105: Number of integer values: 0
+2024-09-01 00:17:04.115: Number of long values: 0
+2024-09-01 00:17:04.125: Number of double values: 0
+2024-09-01 00:17:04.135: Number of boolean values: 0
+2024-09-01 00:17:04.145: Number of data values: 0
+2024-09-01 00:17:04.155: Number of locks: 20
+2024-09-01 00:17:04.165: Number of internal associations: 200
+2024-09-01 00:17:04.175: Number of external associations: 0
+2024-09-01 00:17:04.182: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |     i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+----------
+        resurrect unit |     10 |   9,00 |  17,00 |    11,30 |     19,14 |         113 |    113ms
+             lock unit |     10 |  21,00 |  28,00 |    22,70 |     10,18 |         227 |    227ms
+      fetch attributes |     10 |  14,00 |  24,00 |    15,90 |     18,38 |         159 |    159ms
+         custom search |      1 |  19,00 |  19,00 |    19,00 |      0,00 |          19 |     19ms
+       create relation |    100 |  10,00 |  14,00 |    11,45 |      6,13 |        1145 | 1s 145ms
+fetch known attributes |      1 |  14,00 |  14,00 |    14,00 |      0,00 |          14 |     14ms
+            store unit |    110 |  13,00 |  19,00 |    15,08 |      6,61 |        1659 | 1s 659ms
+
+
