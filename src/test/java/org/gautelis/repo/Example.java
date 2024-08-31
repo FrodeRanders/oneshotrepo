@@ -82,7 +82,6 @@ public class Example {
 
         // Result set constraints (paging)
         SearchOrder order = SearchOrder.getDefaultOrder(); // descending on creation time
-        UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
 
         // Now we can either use canned search (that produces units) or
         // search "manually" where we retrieve individual fields of units
@@ -100,6 +99,7 @@ public class Example {
         } else {
             // Search "manually", in which case no Unit:s are instantiated
             DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
+            UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
             StringBuilder buf = searchAdapter.generateStatement(usd);
 
             try {

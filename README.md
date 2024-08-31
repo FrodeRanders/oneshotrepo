@@ -53,8 +53,7 @@ Example of usage:
 
         // Result set constraints (paging)
         SearchOrder order = SearchOrder.getDefaultOrder(); // descending on creation time
-        UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
-
+ 
         // Now we can either use canned search (that produces instantiated Unit:s) or
         // search "manually" where we retrieve individual fields of units without 
         // actually creating Unit objects.
@@ -72,6 +71,7 @@ Example of usage:
         } else {
             // Search "manually", in which case no Unit:s are instantiated
             DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
+            UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
             StringBuilder buf = searchAdapter.generateStatement(usd);
 
             try {
