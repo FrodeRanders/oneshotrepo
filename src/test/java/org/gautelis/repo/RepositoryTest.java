@@ -71,8 +71,8 @@ public class RepositoryTest extends TestCase {
         final String stringAttribute = "dc:title";
         final String timeAttribute = "dc:date";
 
-        final int numberOfParents = 10; //
-        final int numberOfChildren = 10; //
+        final int numberOfParents = 50; //
+        final int numberOfChildren = 50; //
 
         try {
             Timestamp firstParentCreated = null;

@@ -56,3 +56,111 @@ fetch known attributes |      1 |  5,00 |   5,00 |     5,00 |      0,00 |       
             store unit |  22000 |  1,00 |  57,00 |     4,31 |     64,01 |       94923 | 1min 34s 923ms
 
 
++--------------------------------------------------------------------------------------+
+|   Run on an Apple iMac Pro (iMacPro1,1) with an Intel Xeon W chip and                |
+|   64 GB RAM, with 10 cores .                                                         |
+|                                                                                      |
+|   The PostgreSQL database is run in a Docker container on the same machine           |
+|   without any special tuning.                                                        |
++--------------------------------------------------------------------------------------+
+
+2024-08-31 12:33:38.247: Number of units: 145581
+2024-08-31 12:33:38.271: Number of mappings from units to values: 289660
+2024-08-31 12:33:38.299: Number of string values: 436751
+2024-08-31 12:33:38.319: Number of time values: 144079
+2024-08-31 12:33:38.329: Number of integer values: 0
+2024-08-31 12:33:38.339: Number of long values: 0
+2024-08-31 12:33:38.349: Number of double values: 0
+2024-08-31 12:33:38.359: Number of boolean values: 0
+2024-08-31 12:33:38.368: Number of data values: 0
+2024-08-31 12:33:38.378: Number of locks: 1502
+2024-08-31 12:33:38.397: Number of internal associations: 144079
+2024-08-31 12:33:38.407: Number of external associations: 0
+2024-08-31 12:33:38.417: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   9,00 |  18,00 |     9,64 |     14,78 |         482 |     482ms
+             lock unit |     50 |  18,00 |  24,00 |    19,60 |      6,10 |         980 |     980ms
+      fetch attributes |     50 |  13,00 |  23,00 |    13,88 |     11,33 |         694 |     694ms
+         custom search |      1 |  22,00 |  22,00 |    22,00 |      0,00 |          22 |      22ms
+       create relation |   2500 |   9,00 |  17,00 |    10,37 |      6,67 |       25913 | 25s 913ms
+fetch known attributes |      1 |  14,00 |  14,00 |    14,00 |      0,00 |          14 |      14ms
+            store unit |   2550 |  12,00 |  22,00 |    13,71 |      6,32 |       34969 | 34s 969ms
+
+
+2024-08-31 12:40:04.897: Number of units: 148131
+2024-08-31 12:40:04.921: Number of mappings from units to values: 294710
+2024-08-31 12:40:04.950: Number of string values: 444402
+2024-08-31 12:40:04.968: Number of time values: 146579
+2024-08-31 12:40:04.979: Number of integer values: 0
+2024-08-31 12:40:04.989: Number of long values: 0
+2024-08-31 12:40:05.000: Number of double values: 0
+2024-08-31 12:40:05.011: Number of boolean values: 0
+2024-08-31 12:40:05.021: Number of data values: 0
+2024-08-31 12:40:05.032: Number of locks: 1552
+2024-08-31 12:40:05.050: Number of internal associations: 146579
+2024-08-31 12:40:05.061: Number of external associations: 0
+2024-08-31 12:40:05.068: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   9,00 |  17,00 |     9,58 |     12,31 |         479 |     479ms
+             lock unit |     50 |  18,00 |  24,00 |    19,68 |      5,94 |         984 |     984ms
+      fetch attributes |     50 |  13,00 |  24,00 |    14,04 |     12,46 |         702 |     702ms
+         custom search |      1 |  22,00 |  22,00 |    22,00 |      0,00 |          22 |      22ms
+       create relation |   2500 |   9,00 |  16,00 |    10,40 |      6,84 |       26010 |  26s 10ms
+fetch known attributes |      1 |  14,00 |  14,00 |    14,00 |      0,00 |          14 |      14ms
+            store unit |   2550 |  12,00 |  32,00 |    13,72 |      6,35 |       34996 | 34s 996ms
+
+
+2024-08-31 12:43:09.092: Number of units: 150681
+2024-08-31 12:43:09.113: Number of mappings from units to values: 299760
+2024-08-31 12:43:09.140: Number of string values: 452053
+2024-08-31 12:43:09.159: Number of time values: 149079
+2024-08-31 12:43:09.169: Number of integer values: 0
+2024-08-31 12:43:09.179: Number of long values: 0
+2024-08-31 12:43:09.189: Number of double values: 0
+2024-08-31 12:43:09.198: Number of boolean values: 0
+2024-08-31 12:43:09.208: Number of data values: 0
+2024-08-31 12:43:09.218: Number of locks: 1602
+2024-08-31 12:43:09.236: Number of internal associations: 149079
+2024-08-31 12:43:09.246: Number of external associations: 0
+2024-08-31 12:43:09.252: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   9,00 |  18,00 |     9,68 |     14,68 |         484 |     484ms
+             lock unit |     50 |  19,00 |  26,00 |    20,12 |      7,29 |        1006 |    1s 6ms
+      fetch attributes |     50 |  13,00 |  24,00 |    13,84 |     11,80 |         692 |     692ms
+         custom search |      1 |  22,00 |  22,00 |    22,00 |      0,00 |          22 |      22ms
+       create relation |   2500 |   9,00 |  17,00 |    10,56 |      7,07 |       26399 | 26s 399ms
+fetch known attributes |      1 |  14,00 |  14,00 |    14,00 |      0,00 |          14 |      14ms
+            store unit |   2550 |  12,00 |  20,00 |    13,78 |      6,27 |       35127 | 35s 127ms
+
+
+2024-08-31 12:48:01.464: Number of units: 153231
+2024-08-31 12:48:01.488: Number of mappings from units to values: 304810
+2024-08-31 12:48:01.515: Number of string values: 459704
+2024-08-31 12:48:01.534: Number of time values: 151579
+2024-08-31 12:48:01.544: Number of integer values: 0
+2024-08-31 12:48:01.554: Number of long values: 0
+2024-08-31 12:48:01.563: Number of double values: 0
+2024-08-31 12:48:01.573: Number of boolean values: 0
+2024-08-31 12:48:01.583: Number of data values: 0
+2024-08-31 12:48:01.592: Number of locks: 1652
+2024-08-31 12:48:01.611: Number of internal associations: 151579
+2024-08-31 12:48:01.621: Number of external associations: 0
+2024-08-31 12:48:01.627: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   9,00 |  16,00 |     9,84 |     11,12 |         492 |     492ms
+             lock unit |     50 |  18,00 |  24,00 |    20,04 |      6,05 |        1002 |    1s 2ms
+      fetch attributes |     50 |  13,00 |  22,00 |    13,96 |      9,60 |         698 |     698ms
+         custom search |      1 |  22,00 |  22,00 |    22,00 |      0,00 |          22 |      22ms
+       create relation |   2500 |   9,00 |  40,00 |     9,92 |     12,05 |       24792 | 24s 792ms
+fetch known attributes |      1 |  15,00 |  15,00 |    15,00 |      0,00 |          15 |      15ms
+            store unit |   2550 |  12,00 |  50,00 |    14,01 |      9,56 |       35727 | 35s 727ms
+
+
