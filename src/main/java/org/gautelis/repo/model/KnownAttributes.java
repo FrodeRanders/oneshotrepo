@@ -35,6 +35,15 @@ import java.util.Optional;
  */
 public final class KnownAttributes {
     private static final Logger log = LoggerFactory.getLogger(KnownAttributes.class);
+
+    public static class AttributeInfo {
+        public int id = 0;
+        public String name = null;
+        public int type = 0; // illegal initial value
+        public boolean forcedScalar = false;
+        public Timestamp created = null;
+    }
+
     private static final Map<String, AttributeInfo> attributes = new HashMap<>();
 
     /**
@@ -52,13 +61,13 @@ public final class KnownAttributes {
                 try (ResultSet rs = Database.executeQuery(pStmt)) {
                     while (rs.next()) {
                         AttributeInfo info = new AttributeInfo();
-                        info.attrId = rs.getInt("attrid");
-                        info.attrName = rs.getString("attrname");
-                        info.attrType = rs.getInt("attrtype");
+                        info.id = rs.getInt("attrid");
+                        info.name = rs.getString("attrname");
+                        info.type = rs.getInt("attrtype");
                         info.forcedScalar = rs.getBoolean("scalar");
-                        info.modified = rs.getTimestamp("modified");
+                        info.created = rs.getTimestamp("created");
 
-                        attributes.put(info.attrName, info);
+                        attributes.put(info.name.toLowerCase(), info);
                     }
                 }
             }));
@@ -70,16 +79,15 @@ public final class KnownAttributes {
      * Get attribute identified by id
      *
      * @param attrId id of attribute
-     * @return AttributeInfo if attribute exists, null otherwise
+     * @return AttributeInfo if attribute exists
      */
     /* package accessible only */
     static Optional<AttributeInfo> getAttribute(Context ctx, int attrId) throws DatabaseConnectionException, DatabaseReadException {
 
         Map<String, AttributeInfo> data = fetchAttributes(ctx);
 
-        // We can afford to loop through the pool data - earlier we had a round trip to the database!
         for (AttributeInfo info : data.values()) {
-            if (info.attrId == attrId) {
+            if (info.id == attrId) {
                 return Optional.of(info);
             }
         }
@@ -90,21 +98,12 @@ public final class KnownAttributes {
      * Get attribute identified by name.
      *
      * @param name name of attribute
-     * @return AttributeInfo if attribute exists, null otherwise
+     * @return AttributeInfo if attribute exists
      */
     /* package accessible only */
     static Optional<AttributeInfo> getAttribute(Context ctx, String name) throws DatabaseConnectionException, DatabaseReadException {
-        Map<String, AttributeInfo> data = fetchAttributes(ctx);
-        return Optional.ofNullable(data.get(name));
+        Map<String, AttributeInfo> info = fetchAttributes(ctx);
+        return Optional.ofNullable(info.get(name.toLowerCase()));
     }
-
-    public static class AttributeInfo {
-        public int attrId = 0;
-        public String attrName = null;
-        public int attrType = 0; // illegal initial value
-        public boolean forcedScalar = false;
-        public Timestamp modified = null;
-    }
-
 }
 

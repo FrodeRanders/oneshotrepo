@@ -59,15 +59,6 @@ public class Repository {
             int tenantId,
             String name
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, ConfigurationException {
-        /*
-         OBSERVE 1:
-            Do not do any initial store to database right now, since the caller will want to modify
-            the unit before storing (later on).
-
-         OBSERVE 2:
-            Do not generate log event here, since nothing has yet been written to database.
-            Remember: The unit is still only in local memory...
-        */
         return new Unit(context, tenantId, name);
     }
 
@@ -189,7 +180,6 @@ public class Repository {
     ) throws DatabaseConnectionException, DatabaseReadException {
 
         Optional<Unit> unit = TimedExecution.run(context.getTimingData(), "resurrect unit", () -> UnitFactory.resurrectUnit(context, tenantId, unitId));
-
         unit.ifPresent(_unit -> generateActionEvent(
                 _unit,
                 ActionEvent.Type.ACCESSED,
@@ -207,7 +197,6 @@ public class Repository {
     ) throws DatabaseReadException {
 
         Optional<Unit> unit = TimedExecution.run(context.getTimingData(), "resurrect unit", () -> UnitFactory.resurrectUnit(context, rs));
-
         unit.ifPresent(_unit -> generateActionEvent(
                 _unit,
                 ActionEvent.Type.ACCESSED,
@@ -227,14 +216,13 @@ public class Repository {
             int tenantId,
             long unitId
     ) throws DatabaseConnectionException, DatabaseReadException {
-
-        return TimedExecution.run(context.getTimingData(), "unit exists", () -> (Boolean) UnitFactory.unitExists(context, tenantId, unitId));
+        return TimedExecution.run(context.getTimingData(), "unit exists", () -> UnitFactory.unitExists(context, tenantId, unitId));
     }
 
     /**
      * Store a unit to persistent storage.
      */
-    public boolean storeUnit(
+    public void storeUnit(
             Unit unit
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, AttributeTypeException, AttributeValueException, UnitReadOnlyException, UnitLockedException, InvalidParameterException, ConfigurationException, SystemInconsistencyException {
 
@@ -263,7 +251,6 @@ public class Repository {
                 ActionEvent.Type.UPDATED,
                 "Unit stored"
         );
-        return true;
     }
 
     /**
@@ -439,7 +426,7 @@ public class Repository {
     /**
      * Unlock unit.
      */
-    public boolean unlockUnit(
+    public void unlockUnit(
             Unit unit
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, InvalidParameterException {
 
@@ -458,8 +445,6 @@ public class Repository {
                     "Unit unlocked"
             );
         }
-
-        return true; // success;
     }
 
     /**
@@ -516,7 +501,7 @@ public class Repository {
     /**
      * Activates unit.
      */
-    public boolean activateUnit(
+    public void activateUnit(
             Unit unit
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, AttributeTypeException, AttributeValueException, InvalidParameterException, IllegalRequestException, ConfigurationException, SystemInconsistencyException {
 
@@ -531,13 +516,12 @@ public class Repository {
                 ActionEvent.Type.UPDATED,
                 "Unit activated"
         );
-        return true;
     }
 
     /**
      * Inactivates unit.
      */
-    public boolean inactivateUnit(
+    public void inactivateUnit(
             Unit unit
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, AttributeTypeException, AttributeValueException, UnitLockedException, InvalidParameterException, IllegalRequestException, ConfigurationException, SystemInconsistencyException {
 
@@ -559,7 +543,6 @@ public class Repository {
                 ActionEvent.Type.UPDATED,
                 "Unit inactivated"
         );
-        return true;
     }
 
     /**
@@ -666,7 +649,7 @@ public class Repository {
         Optional<KnownAttributes.AttributeInfo> attributeInfo = getAttributeInfo(attributeName);
         Integer[] attributeId = { null };
         attributeInfo.ifPresent(attr -> {
-            attributeId[0] = (Integer) attr.attrId;
+            attributeId[0] = (Integer) attr.id;
         });
         return Optional.ofNullable(attributeId[0]);
     }
@@ -675,9 +658,35 @@ public class Repository {
         Optional<KnownAttributes.AttributeInfo> attributeInfo = getAttributeInfo(attributeId);
         String[] attributeName = { null };
         attributeInfo.ifPresent(attr -> {
-            attributeName[0] = attr.attrName;
+            attributeName[0] = attr.name;
         });
         return Optional.ofNullable(attributeName[0]);
+    }
+
+    public Optional<Tenant.TenantInfo> getTenantInfo(String tenantName) throws DatabaseConnectionException, DatabaseReadException {
+        return Tenant.getTenant(context, tenantName);
+    }
+
+    public Optional<Tenant.TenantInfo> getTenantInfo(int tenantId) throws DatabaseConnectionException, DatabaseReadException {
+        return Tenant.getTenant(context, tenantId);
+    }
+
+    public Optional<Integer> tenantNameToId(String tenantName) {
+        Optional<Tenant.TenantInfo> tenantInfo = getTenantInfo(tenantName);
+        Integer[] tenantId = { null };
+        tenantInfo.ifPresent(info -> {
+            tenantId[0] = info.id;
+        });
+        return Optional.ofNullable(tenantId[0]);
+    }
+
+    public Optional<String> tenantIdToName(int tenantId) {
+        Optional<Tenant.TenantInfo> tenantInfo = getTenantInfo(tenantId);
+        String[] tenantName = { null };
+        tenantInfo.ifPresent(info -> {
+            tenantName[0] = info.name;
+        });
+        return Optional.ofNullable(tenantName[0]);
     }
 
     /**

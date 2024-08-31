@@ -1,9 +1,38 @@
-# 'One shot' repositorium
+package org.gautelis.repo;
 
-A metadata management system around 'units'. Units are non-versioned entities that can encapsulate dynamic sets of metadata.
+import org.gautelis.repo.db.Database;
+import org.gautelis.repo.model.Repository;
+import org.gautelis.repo.model.Unit;
+import org.gautelis.repo.model.attributes.Attribute;
+import org.gautelis.repo.model.utils.TimedExecution;
+import org.gautelis.repo.search.*;
 
-Example of usage:
-```java
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
+public class Example {
+
+    private int getTenantId(String tenantName, Repository repo) {
+        Optional<Integer> tenantId = repo.tenantNameToId(tenantName);
+        if (tenantId.isEmpty()) {
+            throw new RuntimeException("Unknown tenant: " + tenantName);
+        }
+        return tenantId.get();
+    }
+
+    private int getAttributeId(String attributeName, Repository repo) {
+        Optional<Integer> attributeId = repo.attributeNameToId(attributeName);
+        if (attributeId.isEmpty()) {
+             throw new RuntimeException("Unknown attribute: " + attributeName);
+        }
+        return attributeId.get();
+    }
+
+
+
     public void createAUnitAndAssignAttributes() {
         Repository repo = RepositoryFactory.getRepository();
         int tenantId = getTenantId("SCRATCH", repo); // SCRATCH is the default space
@@ -77,22 +106,4 @@ Example of usage:
             throw new RuntimeException("Could not search: " + Database.squeeze(sqle), sqle);
         }
     }
-
-    /* Utility function, tenant name -> tenant id */
-    private int getTenantId(String tenantName, Repository repo) {
-        Optional<Integer> tenantId = repo.tenantNameToId(tenantName);
-        if (tenantId.isEmpty()) {
-            throw new RuntimeException("Unknown tenant: " + tenantName);
-        }
-        return tenantId.get();
-    }
-
-    /* Utility function, attribute name -> attribute id */
-    private int getAttributeId(String attributeName, Repository repo) {
-        Optional<Integer> attributeId = repo.attributeNameToId(attributeName);
-        if (attributeId.isEmpty()) {
-            throw new RuntimeException("Unknown attribute: " + attributeName);
-        }
-        return attributeId.get();
-    }
-```
+}

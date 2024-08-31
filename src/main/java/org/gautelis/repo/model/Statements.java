@@ -19,8 +19,8 @@ package org.gautelis.repo.model;
 import org.gautelis.vopn.lang.Configurable;
 
 public interface Statements {
-    @Configurable(property = "sql.unit.check_later_version")
-    String unitCheckLaterVersion();
+    @Configurable(property = "sql.tenant.get_all")
+    String tenantsGetAll();
 
     @Configurable(property = "sql.unit.delete")
     String unitDelete();

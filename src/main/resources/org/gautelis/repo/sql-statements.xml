@@ -7,6 +7,13 @@
     </comment>
 
     <!--
+      Get all tenants from repo_tenant table.
+    -->
+    <entry key="sql.tenant.get_all">
+        SELECT tenantid, name, description, created FROM repo_tenant
+    </entry>
+
+    <!--
       Delete a specific unit from repo_unit table.
       Call with: (tenantId, unitId)
     -->
@@ -105,7 +112,7 @@
       Get all available attributes.
     -->
     <entry key="sql.attribute.get_all">
-        SELECT * FROM repo_attribute
+        SELECT attrid, attrname, attrtype, scalar, created FROM repo_attribute
     </entry>
 
     <!--

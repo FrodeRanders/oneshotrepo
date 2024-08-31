@@ -90,7 +90,7 @@ CREATE TABLE repo_attribute
     attrname    VARCHAR(255) NOT NULL,           -- name of attribute
     attrtype    INTEGER      NOT NULL,           -- defined in org.gautelis.repo.model.attributes.Type
     scalar      BOOLEAN      NOT NULL DEFAULT FALSE,
-    modified    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT repo_attributes_pk
         PRIMARY KEY (attrid),

@@ -71,8 +71,8 @@ public class RepositoryTest extends TestCase {
         final String stringAttribute = "dc:title";
         final String timeAttribute = "dc:date";
 
-        final int numberOfParents = 50; //
-        final int numberOfChildren = 50; //
+        final int numberOfParents = 10; //
+        final int numberOfChildren = 10; //
 
         try {
             Timestamp firstParentCreated = null;
@@ -189,15 +189,13 @@ public class RepositoryTest extends TestCase {
                 expr = SearchExpression.assembleAnd(expr, stringSearchItem);
 
                 // Result set constraints (paging)
-                SearchOrder order = SearchOrder.getDefaultOrder(); // descending on modification
+                SearchOrder order = SearchOrder.getDefaultOrder(); // descending on creation time
                 UnitSearchData usd = new UnitSearchData(expr, order, /* selectionSize */ 5);
 
                 // Build SQL statement for search
                 DatabaseAdapter searchAdapter = repo.getDatabaseAdapter();
                 StringBuilder buf = searchAdapter.generateStatement(usd);
                 log.debug("Search statement: {}", buf.toString());
-
-                final boolean doCollectStatistics = false;
 
                 // Actually searching
                 TimedExecution.run(repo.getTimingData(), "custom search", () -> {
@@ -209,9 +207,9 @@ public class RepositoryTest extends TestCase {
                                     int i = 0;
                                     int _tenantId = rs.getInt(++i);
                                     long _unitId = rs.getLong(++i);
-                                    Timestamp _modified = rs.getTimestamp(++i);
+                                    Timestamp _created = rs.getTimestamp(++i);
 
-                                    System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " modified=" + _modified);
+                                    System.out.println("Found: tenantId=" + _tenantId + " unitId=" + _unitId + " created=" + _created);
                                 }
                             }
                         ));

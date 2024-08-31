@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class Attribute<T> {
     private static final Logger log = LoggerFactory.getLogger(Attribute.class);
 
-    private int attrId;
+    private int id;
     private long valueId = -1L; // initially invalid
     private String name;
     private Type type;
@@ -51,7 +51,7 @@ public class Attribute<T> {
     public Attribute(
             int attrId, String name, Type type
     ) throws AttributeTypeException {
-        this.attrId = attrId;
+        this.id = attrId;
         this.name = name.trim();
         this.type = type;
 
@@ -61,7 +61,7 @@ public class Attribute<T> {
     public Attribute(
             KnownAttributes.AttributeInfo attributeInfo
     ) throws AttributeTypeException {
-        this(attributeInfo.attrId, attributeInfo.attrName, Type.of(attributeInfo.attrType));
+        this(attributeInfo.id, attributeInfo.name, Type.of(attributeInfo.type));
     }
 
     /**
@@ -122,7 +122,7 @@ public class Attribute<T> {
      * @return int id of attribute
      */
     public int getAttrId() {
-        return attrId;
+        return id;
     }
 
     /**
@@ -156,7 +156,7 @@ public class Attribute<T> {
                     int i = 0;
                     pStmt.setInt(++i, unit.getTenantId());
                     pStmt.setLong(++i, unit.getUnitId());
-                    pStmt.setInt(++i, attrId);
+                    pStmt.setInt(++i, id);
 
                     int rowCount = Database.executeUpdate(pStmt);
                     if (rowCount != 1) {
@@ -195,7 +195,7 @@ public class Attribute<T> {
 
         try {
             // Get attribute version information from row
-            attrId = rs.getInt("attrid");
+            id = rs.getInt("attrid");
             valueId = rs.getLong("valueid");
             name = rs.getString("attrname");
             type = Type.of(rs.getInt("attrtype"));
@@ -223,14 +223,13 @@ public class Attribute<T> {
 
     /**
      * Overridden method from {@link Object }
-     *
-     * @return Created String
      */
+    @Override
     public String toString() {
-        return attrId + "(" + name + ")" +
+        return "Attribute{" + id + "(" + name + ")" +
                 (value.isNew() ? "*" : "") +
                 (value.isModified() ? "~" : "") +
-                " = " + value.toString();
+                " = " + value.toString() + "}";
     }
 }
 
