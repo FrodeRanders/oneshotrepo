@@ -56,6 +56,7 @@ fetch known attributes |      1 |  5,00 |   5,00 |     5,00 |      0,00 |       
             store unit |  22000 |  1,00 |  57,00 |     4,31 |     64,01 |       94923 | 1min 34s 923ms
 
 
+
 +--------------------------------------------------------------------------------------+
 |   Run on an Apple iMac Pro (iMacPro1,1) with an Intel Xeon W chip and                |
 |   64 GB RAM, with 10 cores .                                                         |
@@ -237,5 +238,63 @@ fetch known attributes |      1 |  14,00 |  14,00 |    14,00 |      0,00 |      
        create relation |    100 |  10,00 |  14,00 |    11,45 |      6,00 |        1145 | 1s 145ms
 fetch known attributes |      1 |  15,00 |  15,00 |    15,00 |      0,00 |          15 |     15ms
             store unit |    110 |  13,00 |  18,00 |    14,98 |      6,39 |        1648 | 1s 648ms
+
+
++--------------------------------------------------------------------------------------+
+|   Run on an Apple MacBook Pro 2022 (Mac14,7) with an Apple M2 chip and 24 GB RAM,    |
+|   with 8 cores (4 performance and 4 efficiency).                                     |
+|                                                                                      |
+|   More often than not, tests are run on battery. The PostgreSQL database is run in   |
+|   a Docker container on the same machine without any special tuning.                 |
++--------------------------------------------------------------------------------------+
+
+2024-09-01 17:21:49.001: Number of units: 204660
+2024-09-01 17:21:49.017: Number of mappings from units to values: 407260
+2024-09-01 17:21:49.029: Number of string values: 613984
+2024-09-01 17:21:49.040: Number of time values: 202600
+2024-09-01 17:21:49.043: Number of integer values: 0
+2024-09-01 17:21:49.047: Number of long values: 0
+2024-09-01 17:21:49.050: Number of double values: 0
+2024-09-01 17:21:49.053: Number of boolean values: 0
+2024-09-01 17:21:49.057: Number of data values: 0
+2024-09-01 17:21:49.060: Number of locks: 2060
+2024-09-01 17:21:49.069: Number of internal associations: 202600
+2024-09-01 17:21:49.073: Number of external associations: 0
+2024-09-01 17:21:49.079: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   2,00 |   7,00 |     3,60 |     26,32 |         180 |     180ms
+             lock unit |     50 |   6,00 |  14,00 |     7,56 |     21,90 |         378 |     378ms
+      fetch attributes |     50 |   4,00 |  11,00 |     5,56 |     20,92 |         278 |     278ms
+         custom search |      1 |  14,00 |  14,00 |    14,00 |      0,00 |          14 |      14ms
+       create relation |   2500 |   2,00 |  35,00 |     3,86 |     32,40 |        9647 |  9s 647ms
+fetch known attributes |      1 |   5,00 |   5,00 |     5,00 |      0,00 |           5 |       5ms
+            store unit |   2550 |   4,00 |  36,00 |     5,30 |     30,28 |       13523 | 13s 523ms
+
+
+2024-09-01 17:23:49.116: Number of units: 207210
+2024-09-01 17:23:49.129: Number of mappings from units to values: 412310
+2024-09-01 17:23:49.143: Number of string values: 621635
+2024-09-01 17:23:49.152: Number of time values: 205100
+2024-09-01 17:23:49.155: Number of integer values: 0
+2024-09-01 17:23:49.159: Number of long values: 0
+2024-09-01 17:23:49.162: Number of double values: 0
+2024-09-01 17:23:49.165: Number of boolean values: 0
+2024-09-01 17:23:49.168: Number of data values: 0
+2024-09-01 17:23:49.172: Number of locks: 2110
+2024-09-01 17:23:49.180: Number of internal associations: 205100
+2024-09-01 17:23:49.183: Number of external associations: 0
+2024-09-01 17:23:49.189: 
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+           Measurement |  Count |    Min |    Max |  Average |  Variance |  Total time |      i.e.
+-----------------------+--------+--------+--------+----------+-----------+-------------+-----------
+        resurrect unit |     50 |   2,00 |   7,00 |     3,76 |     24,36 |         188 |     188ms
+             lock unit |     50 |   6,00 |  12,00 |     7,76 |     21,24 |         388 |     388ms
+      fetch attributes |     50 |   4,00 |  11,00 |     5,62 |     19,65 |         281 |     281ms
+         custom search |      1 |  13,00 |  13,00 |    13,00 |      0,00 |          13 |      13ms
+       create relation |   2500 |   3,00 |  36,00 |     3,92 |     32,24 |        9805 |  9s 805ms
+fetch known attributes |      1 |   5,00 |   5,00 |     5,00 |      0,00 |           5 |       5ms
+            store unit |   2550 |   4,00 |  36,00 |     5,36 |     31,19 |       13656 | 13s 656ms
 
 

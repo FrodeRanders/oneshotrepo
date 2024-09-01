@@ -601,7 +601,7 @@ public class Repository {
                         context.getTimingData().update("search",after - before);
 
                         if (log.isTraceEnabled()) {
-                            log.trace("Search: time={}ms", Long.valueOf(after - before));
+                            log.trace("Search: time={}ms", after - before);
                         }
 
                         while (rs.next()) {
