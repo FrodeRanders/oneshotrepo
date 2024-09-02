@@ -51,17 +51,30 @@ public class Repository {
         this.actionListeners.putAll(actionListeners);
     }
 
+    /**
+     * Gives access to a database adapter, from which solution-related SQL can
+     * be retrieved.
+     */
     public DatabaseAdapter getDatabaseAdapter() {
         return context.getDatabaseAdapter();
     }
 
+    /**
+     * Creates a unit for specified tenant with the specified name.
+     * @param tenantId id of tenant
+     * @param name name of unit
+     * @return a new unit, not yet persisted
+     * @throws DatabaseConnectionException
+     * @throws DatabaseReadException
+     * @throws DatabaseWriteException
+     * @throws ConfigurationException
+     */
     public Unit createUnit(
             int tenantId,
             String name
     ) throws DatabaseConnectionException, DatabaseReadException, DatabaseWriteException, ConfigurationException {
         return new Unit(context, tenantId, name);
     }
-
 
     /**
      * Searches for <B>all</B> units with status 'pending disposal',
@@ -121,8 +134,6 @@ public class Repository {
 
     /**
      * Dispose all objects marked as 'pending disposition'.
-     * <p>
-     * User must be root.
      * <p>
      * Only objects with status of <B>INTERNAL_STATUS_PENDING_DISPOSITION</B>
      * are disposed.
@@ -458,7 +469,7 @@ public class Repository {
             throw new InvalidParameterException("no unit");
         }
 
-        // Delete unit (all versions) if not locked by another user.
+        // Delete unit (all versions) if not locked.
         boolean isUndisposable = false;
         {
             for (Lock lock : unit.getLocks()) {
@@ -529,7 +540,7 @@ public class Repository {
             throw new InvalidParameterException("no unit");
         }
 
-        // Check if unit is locked by some other user
+        // Check if unit is locked
         if (unit.isLocked()) {
             for (Lock lock : unit.getLocks()) {
                 throw new UnitLockedException("Unit " + unit.getReference() + " has lock: " + lock);
