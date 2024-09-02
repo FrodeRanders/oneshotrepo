@@ -267,15 +267,6 @@ public class Repository {
     /**
      * Associates a unit with an external resource (reference).
      * <p>
-     * <I>This method has side effects: If, as a result of calling
-     * this method, the internal status of the unit should be
-     * updated, a request for this status transition is issued.
-     * This information is not persisted to database though. You
-     * should be aware of the fact that you may have a <B>modified</B>
-     * unit after this call.</I>
-     * <p>
-     * Currently only accepts the Association.CASE_ASSOCIATION
-     * association.
      */
     public void addRelation(
             Unit unit, Association.Type assocType, Unit otherUnit
