@@ -2,6 +2,8 @@
 
 A metadata management system around 'units'. Units are immutable entities that can encapsulate dynamic sets of metadata.
 
+See [this README](db/postgresql/README.md) for instructions for running and preparing PostgreSQL in a Docker container.
+
 Example of usage:
 ```java
     public void createAUnitAndAssignAttributes() {

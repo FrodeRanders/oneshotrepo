@@ -1,3 +1,13 @@
+# Instructions for retrieving, running and preparing PostgreSQL
+
+The name of the database ('repo'), the user ('repo') and the password ('repo'), 
+matches the [configuration](../../src/main/resources/org/gautelis/repo/configuration.xml) 
+that is currently stored among the resources. This is not ideal for production use, 
+but makes demonstrating the functionality a breeze.
+
+## Retrieving PostgreSQL from Docker hub
+
+```
 ~ > docker pull postgres
 Using default tag: latest
 latest: Pulling from library/postgres
@@ -21,18 +31,24 @@ docker.io/library/postgres:latest
 
 What's next:
     View a summary of image vulnerabilities and recommendations → docker scout quickview postgres
+```
 
+## Start an instance of PostgreSQL
+
+```
 ~ > docker run --name repo-postgres -e POSTGRES_PASSWORD=H0nd@666 -p 1402:5432 -d postgres
 2dddb1bbf6f4684ba4a44fccb92d4b5f924902c4920e84b7ed7aa84caa165300
 
 ~ > docker ps -all
 CONTAINER ID   IMAGE      COMMAND                  CREATED          STATUS          PORTS                    NAMES
 2dddb1bbf6f4   postgres   "docker-entrypoint.s…"   25 seconds ago   Up 24 seconds   0.0.0.0:1402->5432/tcp   repo-postgres
+```
 
-~ >
+## Preparing database
 
-## Connect to it (for creating stuff)
+You are absolutely right -- 'repo' is not a good password for user 'repo', not even in an example.
 
+```
 ~ > docker run -it --rm --link repo-postgres:postgres postgres psql -h postgres -U postgres
 Password for user postgres: 
 
@@ -45,29 +61,11 @@ CREATE ROLE
 postgres=# CREATE DATABASE repo;
 CREATE DATABASE
 
-// postgres=# GRANT ALL PRIVILEGES ON DATABASE repo TO repo;
-// GRANT
-
-// postgres=# GRANT ALL PRIVILEGES ON SCHEMA public TO repo;
-// GRANT
-
 postgres=# ALTER DATABASE repo OWNER TO repo;
 ALTER DATABASE
 
-postgres=# \l
-                                                      List of databases
-   Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges
------------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
- postgres  | postgres | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           |
- repo      | repo     | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =Tc/repo             +
-           |          |          |                 |            |            |            |           | repo=CTc/repo
- template0 | postgres | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/postgres          +
-           |          |          |                 |            |            |            |           | postgres=CTc/postgres
- template1 | postgres | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/postgres          +
-           |          |          |                 |            |            |            |           | postgres=CTc/postgres
-(4 rows)
-
 postgres=# \q
+```
 
 ## More at https://hub.docker.com/_/postgres/
 
