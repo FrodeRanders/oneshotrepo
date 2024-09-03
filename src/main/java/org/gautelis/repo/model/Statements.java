@@ -40,26 +40,17 @@ public interface Statements {
     @Configurable(property = "sql.unit.set_status")
     String unitSetStatus();
 
-    @Configurable(property = "sql.unit.update")
-    String unitUpdate();
-
     @Configurable(property = "sql.unit.get_attributes")
     String unitGetAttributes();
 
     @Configurable(property = "sql.attribute.insert")
     String attributeInsert();
 
-    @Configurable(property = "sql.attribute.update")
-    String attributeUpdate();
-
     @Configurable(property = "sql.attribute.delete")
     String attributeDelete();
 
     @Configurable(property = "sql.attribute.get_all")
     String attributeGetAll();
-
-    @Configurable(property = "sql.value.allocate_id")
-    String valueAllocateId();
 
     @Configurable(property = "sql.value.date_insert")
     String valueDateInsert();

@@ -14,7 +14,11 @@
     </entry>
 
     <!--
-      Delete a specific unit from repo_unit table.
+      Delete a specific unit from repo_unit table and cascades to
+        repo_attribute_value, repo_string_vector, repo_time_vector,
+        repo_integer_vector, repo_long_vector, repo_double_vector,
+        repo_boolean_vector, repo_data_vector,
+        repo_lock, repo_internal_assoc, repo_external_assoc
       Call with: (tenantId, unitId)
     -->
     <entry key="sql.unit.delete">
@@ -60,14 +64,6 @@
     -->
     <entry key="sql.unit.set_status">
         UPDATE repo_unit SET status=? WHERE (tenantid=? AND unitid=?)
-    </entry>
-
-    <!--
-      Update unit information (TODO Only name for now)
-      Call with: (name, tenantId, unitId)
-    -->
-    <entry key="sql.unit.update">
-        UPDATE repo_unit SET name=? WHERE (tenantid=? AND unitid=?)
     </entry>
 
     <!--

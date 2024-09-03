@@ -340,15 +340,22 @@ public class Unit implements Cloneable {
     /**
      * Delete unit and all related information
      */
-    public void delete() throws DatabaseConnectionException, DatabaseWriteException {
+    /* package accessible only */
+    void delete() throws DatabaseConnectionException, DatabaseWriteException {
         try (Connection conn = ctx.getDataSource().getConnection()) {
             conn.setReadOnly(false);
-            try {
-                // Remove all association to/from unit
-                AssociationManager.removeAllAssociations(ctx, conn, tenantId, unitId);
+            conn.setAutoCommit(false);
 
-                // Delete unit itself
-                delete(conn);
+            try {
+                // Remove unit from repo_unit and fall back on cascaded delete for
+                // deleting other relevant entries. repo_log is not touched though.
+                Database.usePreparedStatement(conn, ctx.getStatements().unitDelete(), pStmt -> {
+                    int i = 0;
+                    pStmt.setInt(++i, tenantId);
+                    pStmt.setLong(++i, unitId);
+                    Database.executeUpdate(pStmt);
+                });
+
                 conn.commit();
 
             } catch (SQLException sqle) {
@@ -358,32 +365,10 @@ public class Unit implements Cloneable {
                 throw new DatabaseWriteException(sqle);
             }
         } catch (SQLException sqle) {
-            throw new DatabaseConnectionException(sqle);
+            String info = "Meta-failure when deleting unit: " + Database.squeeze(sqle);
+            log.error(info, sqle);
+            throw new DatabaseConnectionException(info, sqle);
         }
-    }
-
-    /**
-     * Delete unit kernel parts. Called only from derived classes.
-     * <p>
-     * <B>Contents must be removed separately!</B>
-     */
-    private void delete(Connection conn) throws DatabaseWriteException {
-
-        // Remove all corresponding entries in repo_log
-        Database.usePreparedStatement(conn, ctx.getStatements().logDeleteEntries(), pStmt -> {
-            int i = 0;
-            pStmt.setInt(++i, tenantId);
-            pStmt.setLong(++i, unitId);
-            Database.executeUpdate(pStmt);
-        });
-
-       // Remove all corresponding entries in repo_unit
-        Database.usePreparedStatement(conn, ctx.getStatements().unitDelete(), pStmt -> {
-            int i = 0;
-            pStmt.setInt(++i, tenantId);
-            pStmt.setLong(++i, unitId);
-            Database.executeUpdate(pStmt);
-        });
     }
 
     private void readEntry(ResultSet rs) throws DatabaseReadException {

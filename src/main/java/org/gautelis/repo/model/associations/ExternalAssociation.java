@@ -79,6 +79,7 @@ public class ExternalAssociation extends Association {
 
         try (Connection conn = ctx.getDataSource().getConnection()) {
             conn.setReadOnly(false);
+            conn.setAutoCommit(false);
 
             try {
                 // Prepare insert by (possibly) removing all existing (right)
@@ -162,6 +163,7 @@ public class ExternalAssociation extends Association {
 
         try (Connection conn = ctx.getDataSource().getConnection()) {
             conn.setReadOnly(false);
+            conn.setAutoCommit(false);
 
             // Get all associations to assocString
             try (PreparedStatement pStmt1 = conn.prepareStatement(ctx.getStatements().assocGetAllSpecificExternalAssocs())) {
