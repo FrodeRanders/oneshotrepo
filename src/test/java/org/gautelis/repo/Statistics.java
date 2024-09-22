@@ -1,47 +1,153 @@
 package org.gautelis.repo;
 
 import com.sun.management.OperatingSystemMXBean;
+import org.gautelis.repo.db.Database;
+import org.gautelis.repo.model.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.gautelis.vopn.lang.Number.asHumanApproximate;
+
 import java.lang.management.ManagementFactory;
 
-public class Reporting {
+public class Statistics {
+    private static final Logger statistics = LoggerFactory.getLogger("STATISTICS");
 
-
-    public static void dumpStatistics() {
-        String osName = System.getProperty("os.name");
-        String osVersion = System.getProperty("os.version");
-        String osArch = System.getProperty("os.arch");
-
-        System.out.println("Operating System: " + osName);
-        System.out.println("Version: " + osVersion);
-        System.out.println("Architecture: " + osArch);
-
+    public static void dumpStatistics(Repository repo) {
+        StringBuilder buf = new StringBuilder("\n===================================================================================================\n");
         Runtime runtime = Runtime.getRuntime();
-
-        long totalMemory = runtime.totalMemory(); // Total memory in JVM
-        long freeMemory = runtime.freeMemory();   // Free memory in JVM
-        long maxMemory = runtime.maxMemory();     // Maximum memory the JVM will attempt to use
-
-        System.out.println("Total Memory (bytes): " + totalMemory);
-        System.out.println("Free Memory (bytes): " + freeMemory);
-        System.out.println("Max Memory (bytes): " + maxMemory);
-
-        int availableProcessors = Runtime.getRuntime().availableProcessors();
-        System.out.println("Available processors (cores): " + availableProcessors);
+        buf.append("OS: ")
+                .append(System.getProperty("os.name")).append(" ")
+                .append(System.getProperty("os.version")).append(" (")
+                .append(System.getProperty("os.arch")).append(" : ").append(runtime.availableProcessors()).append(" cores)\n");
 
         OperatingSystemMXBean osBean =
                 (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        buf.append("Phys memory: ")
+                .append("total=").append(asHumanApproximate(osBean.getTotalMemorySize(), " ").replaceAll("\\u00a0"," ")).append(" ")
+                .append("free=").append(asHumanApproximate(osBean.getFreeMemorySize(), " ").replaceAll("\\u00a0"," ")).append("\n");
 
-        // CPU load
-        double cpuLoad = osBean.getCpuLoad();
-        System.out.println("CPU Load: " + cpuLoad);
+        buf.append("JVM: ")
+                .append("vm=").append(System.getProperty("java.vm.name")).append(" (").append(System.getProperty("java.vm.version")).append(") ")
+                .append("mem-total=").append(asHumanApproximate(runtime.totalMemory(), " ").replaceAll("\\u00a0"," ")).append(" ")
+                .append("mem-free=").append(asHumanApproximate(runtime.freeMemory(), " ").replaceAll("\\u00a0"," ")).append("\n");
 
-        // Total physical memory
-        long totalPhysicalMemory = osBean.getTotalMemorySize();
-        long freePhysicalMemory = osBean.getFreeMemorySize();
+        buf.append("\n");
 
-        System.out.println("Total Physical Memory (bytes): " + totalPhysicalMemory);
-        System.out.println("Free Physical Memory (bytes): " + freePhysicalMemory);
+        repo.useDataSource(dataSource -> {
+            /*
+             * Count all units
+             */
+            String sql = "SELECT COUNT(*) FROM repo_unit";
 
+            Database.useReadonlyStatement(dataSource, sql, rs -> {
+                if (rs.next()) {
+                    buf.append("Units: total=").append(rs.getLong(1)).append(" ");
+                }
+            });
 
+            /*
+             * Number of locks
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_lock", rs -> {
+                if (rs.next()) {
+                    buf.append("locks=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of mappings from units to attribute values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_attribute_value", rs -> {
+                if (rs.next()) {
+                    buf.append("vectors=").append(rs.getLong(1)).append("\n");
+                }
+            });
+
+            buf.append("Values: ");
+
+            /*
+             * Number of string values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_string_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("string=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of time values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_time_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("time=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of integer values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_integer_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("integer=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of long values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_long_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("long=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of double values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_double_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("double=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of boolean values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_boolean_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("boolean=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of data values
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_data_vector", rs -> {
+                if (rs.next()) {
+                    buf.append("data=").append(rs.getLong(1)).append("\n");
+                }
+            });
+
+            /*
+             * Number of internal associations
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_internal_assoc", rs -> {
+                if (rs.next()) {
+                    buf.append("Assocs: internal=").append(rs.getLong(1)).append(" ");
+                }
+            });
+
+            /*
+             * Number of external associations
+             */
+            Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_external_assoc", rs -> {
+                if (rs.next()) {
+                    buf.append("external=").append(rs.getLong(1)).append("\n");
+                }
+            });
+        });
+        statistics.info(buf.toString());
+        statistics.info("\n{}", repo.getTimingData().report());
     }
 }

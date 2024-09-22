@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.gautelis.repo.db.Database;
 import org.gautelis.repo.exceptions.BaseException;
-import org.gautelis.repo.model.KnownAttributes;
 import org.gautelis.repo.model.Repository;
 import org.gautelis.repo.model.Unit;
 import org.gautelis.repo.model.associations.Association;
@@ -33,17 +32,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Optional;
+
+import static org.gautelis.repo.Statistics.dumpStatistics;
 
 /**
  *
  */
 public class RepositoryTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(RepositoryTest.class);
-    private static final Logger statistics = LoggerFactory.getLogger("STATISTICS");
 
     /**
      * Create the test case
@@ -218,118 +216,7 @@ public class RepositoryTest extends TestCase {
                 });
             }
 
-            repo.useDataSource(dataSource -> {
-                /*
-                 * Count all units
-                 */
-                String sql = "SELECT COUNT(*) FROM repo_unit";
-
-                Database.useReadonlyStatement(dataSource, sql, rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of units: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of mappings from units to attribute values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_attribute_value", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of mappings from units to values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of string values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_string_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of string values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of time values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_time_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of time values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of integer values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_integer_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of integer values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of long values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_long_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of long values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of double values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_double_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of double values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of boolean values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_boolean_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of boolean values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of data values
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_data_vector", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of data values: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of locks
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_lock", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of locks: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of internal associations
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_internal_assoc", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of internal associations: {}", rs.getInt(1));
-                    }
-                });
-
-                /*
-                 * Number of external associations
-                 */
-                Database.useReadonlyStatement(dataSource, "SELECT COUNT(*) FROM repo_external_assoc", rs -> {
-                    if (rs.next()) {
-                        statistics.info("Number of external associations: {}", rs.getInt(1));
-                    }
-                });
-            });
-            statistics.info("\n{}", repo.getTimingData().report());
+            dumpStatistics(repo);
 
         } catch (Throwable t) {
             String info = t.getMessage();
