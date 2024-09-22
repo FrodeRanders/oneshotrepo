@@ -69,8 +69,8 @@ public class RepositoryTest extends TestCase {
         final String stringAttribute = "dc:title";
         final String timeAttribute = "dc:date";
 
-        final int numberOfParents = 50; //
-        final int numberOfChildren = 50; //
+        final int numberOfParents = 100; //
+        final int numberOfChildren = 1000; //
 
         try {
             Timestamp firstParentCreated = null;
@@ -86,7 +86,7 @@ public class RepositoryTest extends TestCase {
             int selectionSize = 0; // pick 'selectionSize' first results
 
             System.out.println("Generating " + (numberOfParents * numberOfChildren) + " units...");
-            System.out.println("(This can take some time)");
+            System.out.println("(This can take some time)\n");
             System.out.flush();
 
             for (int j = 1; j < numberOfParents + 1; j++) {
@@ -113,6 +113,12 @@ public class RepositoryTest extends TestCase {
                 repo.lockUnit(parentUnit, Lock.Type.EXISTENCE, "test");
 
                 for (int i = 1; i < numberOfChildren + 1; i++) {
+                    long count = (j-1)*numberOfChildren + i;
+                    if (count % 1000 == 0) {
+                        System.out.print("\r" + count);
+                        System.out.flush();
+                    }
+
                     Unit childUnit = repo.createUnit(tenantId, "child-" + j + "-" + i);
 
                     // Initial version

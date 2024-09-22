@@ -20,7 +20,7 @@ import org.gautelis.vopn.db.Database;
 import org.gautelis.vopn.lang.Configurable;
 
 public interface Configuration extends Database.Configuration {
-    @Configurable(property = "repository.database.adapter", value = "org.gautelis.repo.db.derby.Adapter")
+    @Configurable(property = "repository.database.adapter", value = "org.gautelis.repo.db.postgresql.Adapter")
     String databaseAdapter();
 
     @Configurable(property = "repository.events.threshold", value = /* ActionEvent.Type.CREATED */ "60")

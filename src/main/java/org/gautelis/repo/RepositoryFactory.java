@@ -16,6 +16,8 @@
  */
 package org.gautelis.repo;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.gautelis.repo.exceptions.ConfigurationException;
 import org.gautelis.repo.listeners.ActionListener;
 import org.gautelis.repo.model.Configuration;
@@ -96,7 +98,7 @@ public class RepositoryFactory {
         }
         int eventThreshold = config.eventsThreshold();
 
-        //
+        /*
         DataSource dataSource;
         try {
             dataSource = Database.getDataSource(config, dataSourcePreparer);
@@ -107,6 +109,15 @@ public class RepositoryFactory {
             log.error(info, dbe);
             throw new ConfigurationException(info, dbe);
         }
+        */
+
+        HikariConfig hConfig = new HikariConfig();
+        String url = "jdbc:" + config.manager() + "://" + config.server() + ":" + config.port() +"/" + config.database();
+        hConfig.setJdbcUrl(url);
+        hConfig.setUsername(config.user());
+        hConfig.setPassword(config.password());
+        hConfig.setMaximumPoolSize(10);
+        HikariDataSource dataSource = new HikariDataSource(hConfig);
 
         // For now -- TODO Fix Configurable to allow collection return values
         Collection<String> eventListeners = new ArrayList<>();

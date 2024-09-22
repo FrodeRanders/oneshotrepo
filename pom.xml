@@ -16,6 +16,7 @@
     <maven.compiler.source>21</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <postgresql.version>42.7.4</postgresql.version>
+    <hikari.version>5.1.0</hikari.version>
     <log4j.version>2.23.1</log4j.version>
     <slf4j.version>2.0.13</slf4j.version>
     <vopn.version>2.4-SNAPSHOT</vopn.version> <!-- sibling project -->
@@ -56,6 +57,12 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>${hikari.version}</version>
     </dependency>
 
     <dependency>
