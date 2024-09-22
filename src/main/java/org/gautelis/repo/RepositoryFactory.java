@@ -100,7 +100,7 @@ public class RepositoryFactory {
         DataSource dataSource;
         try {
             dataSource = Database.getDataSource(config, dataSourcePreparer);
-            prepareInternalDatabase(config.manager(), dataSource);
+            prepareDatabase(config.manager(), dataSource);
         }
         catch (DatabaseException dbe) {
             String info = "Failed to load data source according to configuration: " + dbe.getMessage();
@@ -155,7 +155,7 @@ public class RepositoryFactory {
     /*
      * Helper functionality
      */
-    public static void prepareInternalDatabase(String dbm, DataSource dataSource) throws ConfigurationException {
+    public static void prepareDatabase(String dbm, DataSource dataSource) throws ConfigurationException {
         Objects.requireNonNull(dbm, "dbm");
         Objects.requireNonNull(dataSource, "dataSource");
 
